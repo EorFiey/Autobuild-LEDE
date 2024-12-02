@@ -55,6 +55,7 @@ jobs:
           CONFIG_TARGET_x86=y
           CONFIG_TARGET_x86_64=y
           CONFIG_TARGET_x86_64_Generic=y
+          CONFIG_PACKAGE_miniupnpd=y
           EOF
 
           #
