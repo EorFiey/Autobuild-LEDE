@@ -69,8 +69,12 @@ jobs:
         run: |
           sudo mkdir -p -m 777 /mnt/dl
           sudo mkdir -p -m 777 /mnt/build_dir
+          sudo mkdir -p -m 777 /mnt/tmp
+          sudo mkdir -p -m 777 /mnt/feeds
           sudo ln -s /mnt/dl ./dl
           sudo ln -s /mnt/build_dir ./build_dir
+          sudo ln -s /mnt/tmp ./tmp
+          sudo ln -s /mnt/feeds ./feeds
 
       - name: Download packages
         run: make download -j16
