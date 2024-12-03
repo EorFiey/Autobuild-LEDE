@@ -36,6 +36,9 @@ jobs:
 
       - name: Checkout OpenWrt
         uses: actions/checkout@v3
+        with: |
+          ref: master
+          fetch-depth: 0
         
       - name: Update feeds
         run: |
@@ -57,6 +60,9 @@ jobs:
           CONFIG_TARGET_x86_64=y
           CONFIG_TARGET_x86_64_Generic=y
           CONFIG_PACKAGE_miniupnpd=y
+          CONFIG_DEVEL=y
+          CONFIG_CCACHE=y
+
           EOF
 
           #
@@ -76,6 +82,16 @@ jobs:
           sudo ln -s /mnt/build_dir ./build_dir
           sudo ln -s /mnt/tmp ./tmp
           sudo ln -s /mnt/feeds ./feeds
+          
+      - name: cache
+        uses: stupidloud/cachewrtbuild@main
+        with:
+          ccache: true
+          toolchain: true
+          mixkey: 'x86_64'
+          skip: true
+          clean: false
+          prefix: ${{ github.workspace }}/openwrt
 
       - name: Download packages
         run: make download -j16
