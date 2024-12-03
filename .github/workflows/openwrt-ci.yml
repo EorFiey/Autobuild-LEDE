@@ -91,7 +91,6 @@ jobs:
           mixkey: 'x86_64'
           skip: true
           clean: false
-          prefix: ${{ github.workspace }}/openwrt
 
       - name: Download packages
         run: make download -j16
