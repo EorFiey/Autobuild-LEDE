@@ -68,6 +68,7 @@ jobs:
           CONFIG_TARGET_x86_64_Generic=y
           CONFIG_PACKAGE_miniupnpd=y
           CONFIG_PACKAGE_luci-app-samba4=y
+          CONFIG_PACKAGE_luci-app-ksmbd=n
 
           EOF
 
