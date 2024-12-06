@@ -82,20 +82,6 @@ jobs:
         run: |
           make download -j16
           df -h
-          
-      - name: Clone or update OpenClash source
-        working-directory: openwrt/package
-        run: |
-          if [ -d "luci-app-openclash" ]; then
-            cd luci-app-openclash
-            git pull
-          else
-            git clone https://github.com/vernesong/OpenClash.git luci-app-openclash
-          fi
-
-      - name: Compile OpenClash
-        working-directory: openwrt
-        run: make package/luci-app-openclash/compile V=s
 
       - name: Compile firmware
         run: |
