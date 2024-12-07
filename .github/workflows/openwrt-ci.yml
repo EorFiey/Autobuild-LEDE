@@ -73,6 +73,7 @@ jobs:
           CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
           CONFIG_PACKAGE_kmod-usb-net-rtl8152-vendor=n
           CONFIG_PACKAGE_ksmbd=n
+          CONFIG_PACKAGE_autosamba=n
           CONFIG_PACKAGE_luci-app-ksmbd=n
           CONFIG_PACKAGE_luci-app-ddns=n
           CONFIG_PACKAGE_luci-app-upnp=n
