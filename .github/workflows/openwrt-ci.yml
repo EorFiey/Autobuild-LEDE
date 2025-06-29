@@ -46,6 +46,12 @@ jobs:
           rm -rf ./package/luci-app-openclash
           mkdir -p ./package/luci-app-openclash
           git clone --depth 1 https://github.com/vernesong/OpenClash.git ./package/luci-app-openclash
+       
+      - name: Clone openlist
+        run: |
+          rm -rf ./package/luci-app-openlist
+          mkdir -p ./package/luci-app-openlist
+          git clone --depth 1 https://github.com/sbwml/luci-app-openlist.git ./package/luci-app-openlist
         
       - name: Update feeds
         run: |
@@ -68,6 +74,7 @@ jobs:
           CONFIG_TARGET_x86_64_Generic=y
           CONFIG_PACKAGE_miniupnpd=y
           CONFIG_PACKAGE_luci-app-openclash=y
+          CONFIG_PACKAGE_luci-app-openlist=y
           CONFIG_PACKAGE_luci-app-samba4=y
           CONFIG_PACKAGE_luci-app-diskman=y
           CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
