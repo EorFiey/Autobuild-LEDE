@@ -52,6 +52,12 @@ jobs:
           rm -rf ./package/luci-app-openlist
           mkdir -p ./package/luci-app-openlist
           git clone --depth 1 https://github.com/sbwml/luci-app-openlist.git ./package/luci-app-openlist
+          
+      - name: Clone xray
+        run: |
+          rm -rf ./package/luci-app-xray
+          mkdir -p ./package/luci-app-xray
+          git clone --depth 1 https://github.com/yichya/luci-app-xray.git ./package/luci-app-xray
         
       - name: Update feeds
         run: |
@@ -75,6 +81,7 @@ jobs:
           CONFIG_PACKAGE_miniupnpd=y
           CONFIG_PACKAGE_luci-app-openclash=y
           CONFIG_PACKAGE_luci-app-openlist=y
+          CONFIG_PACKAGE_luci-app-xray=y
           CONFIG_PACKAGE_luci-app-samba4=y
           CONFIG_PACKAGE_luci-app-diskman=y
           CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
