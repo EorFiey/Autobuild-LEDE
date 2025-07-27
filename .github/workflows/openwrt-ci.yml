@@ -108,7 +108,6 @@ jobs:
 
       - name: Compile firmware
         run: |
-          export LDFLAGS="-lz"
           make -j$(nproc) || make -j1 V=s
           echo "======================="
           echo "Space usage:"
