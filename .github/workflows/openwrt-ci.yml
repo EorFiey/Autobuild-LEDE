@@ -75,6 +75,7 @@ jobs:
           CONFIG_PACKAGE_miniupnpd=y
           CONFIG_PACKAGE_luci-app-openclash=y
           CONFIG_PACKAGE_luci-app-openlist=y
+          CONFIG_PACKAGE_luci-app-xray=y
           CONFIG_PACKAGE_luci-app-samba4=y
           CONFIG_PACKAGE_luci-app-diskman=y
           CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
