@@ -9,7 +9,8 @@ name: OpenWrt-CI
 
 on:
   schedule:
-    - cron: 0 20 * * *
+    - cron: 0 20 * * *  # 每天北京时间凌晨4点运行
+  workflow_dispatch:    # 允许手动触发
 
 permissions:
   contents: read
@@ -20,7 +21,7 @@ jobs:
 
     name: Build OpenWrt Firmware
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Space cleanup and Initialization environment
@@ -41,21 +42,19 @@ jobs:
 
       - name: Checkout OpenWrt
         uses: actions/checkout@v4
-
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # this might remove tools that are actually needed,
-          # if set to "true" but frees about 6 GB
-          tool-cache: true
-          # all of these default to true, but feel free to set to
-          # "false" if necessary for your workflow
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          swap-storage: true
-
+        
+      - name: Clone OpenClash
+        run: |
+          rm -rf ./package/luci-app-openclash
+          mkdir -p ./package/luci-app-openclash
+          git clone --depth 1 https://github.com/vernesong/OpenClash.git ./package/luci-app-openclash
+       
+      - name: Clone openlist
+        run: |
+          rm -rf ./package/luci-app-openlist
+          mkdir -p ./package/luci-app-openlist
+          git clone --depth 1 https://github.com/sbwml/luci-app-openlist.git ./package/luci-app-openlist
+        
       - name: Update feeds
         run: |
           sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
@@ -63,10 +62,51 @@ jobs:
           ./scripts/feeds install -a
 
       - name: Generate configuration file
-        run: make defconfig
+        run: |
+          rm -f ./.config*
+          touch ./.config
+          
+          #
+          # 在 cat >> .config <<EOF 到 EOF 之间粘贴你的编译配置, 需注意缩进关系
+          # 例如:
+
+          cat >> .config <<EOF
+          CONFIG_TARGET_x86=y
+          CONFIG_TARGET_x86_64=y
+          CONFIG_TARGET_x86_64_Generic=y
+          CONFIG_PACKAGE_miniupnpd=y
+          CONFIG_PACKAGE_luci-app-openclash=y
+          CONFIG_PACKAGE_luci-app-openlist=y
+          CONFIG_PACKAGE_luci-app-samba4=y
+          CONFIG_PACKAGE_luci-app-diskman=y
+          CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
+          CONFIG_PACKAGE_kmod-usb-net-rtl8152-vendor=n
+          CONFIG_PACKAGE_ksmbd=n
+          CONFIG_PACKAGE_autosamba=n
+          CONFIG_PACKAGE_luci-app-ksmbd=n
+          CONFIG_PACKAGE_luci-app-ddns=n
+          CONFIG_PACKAGE_luci-app-upnp=n
+
+          EOF
+
+          #
+          # ===============================================================
+          # 
+
+          sed -i 's/^[ \t]*//g' ./.config
+          make defconfig
+
+      - name: mnt
+        run: |
+          sudo mkdir -p -m 777 /mnt/dl
+          sudo mkdir -p -m 777 /mnt/build_dir
+          sudo ln -s /mnt/dl ./dl
+          sudo ln -s /mnt/build_dir ./build_dir
 
       - name: Download packages
-        run: make download -j16
+        run: |
+          make download -j16
+          df -h
 
       - name: Compile firmware
         run: |
