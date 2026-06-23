@@ -1,6 +1,7 @@
 define Device/EmmcImage
-	IMAGES += factory.bin
-	IMAGE/factory.bin := append-kernel | pad-to 6144k | append-rootfs | append-metadata
+	IMAGES += factory.bin recovery.bin
+	IMAGE/factory.bin := append-kernel | pad-to 12288k | append-rootfs | append-metadata
+	IMAGE/recovery.bin := append-kernel | pad-to 6144k | append-rootfs | append-metadata
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-to 64k | sysupgrade-tar rootfs=$$$$@ | append-metadata
 endef
 
@@ -9,11 +10,12 @@ define Device/anysafe_e1
 	$(call Device/UbiFit)
 	DEVICE_VENDOR := AnySafe
 	DEVICE_MODEL := E1
-	SOC := ipq6010
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
+	DEVICE_DTS := ipq6010-anysafe-e1
 	DEVICE_DTS_CONFIG := config@cp01-c3
-	DEVICE_PACKAGES := ath11k-firmware-qcn9074 ipq-wifi-anysafe_e1 kmod-ath11k-pci kmod-hwmon-pwmfan
+	DEVICE_PACKAGES := ath11k-firmware-qcn9074 ipq-wifi-anysafe_e1 \
+		kmod-ath11k-pci kmod-hwmon-pwmfan
 endef
 TARGET_DEVICES += anysafe_e1
 
@@ -126,19 +128,6 @@ define Device/link_nn6000-v2
 endef
 TARGET_DEVICES += link_nn6000-v2
 
-define Device/philips_ly1800
-	$(call Device/FitImage)
-	$(call Device/EmmcImage)
-	DEVICE_VENDOR := Philips
-	DEVICE_MODEL := LY1800 (Double Fish AX1800)
-	SOC := ipq6010
-	BLOCKSIZE := 128k
-	KERNEL_SIZE := 6144k
-	DEVICE_DTS_CONFIG := config@cp01-c1
-	DEVICE_PACKAGES := ipq-wifi-philips_ly1800
-endef
-TARGET_DEVICES += philips_ly1800
-
 define Device/linksys_mr7350
 	$(call Device/FitImage)
 	DEVICE_VENDOR := Linksys
@@ -155,6 +144,19 @@ define Device/linksys_mr7350
 		kmod-leds-pca963x kmod-usb-ledtrig-usbport
 endef
 TARGET_DEVICES += linksys_mr7350
+
+define Device/philips_ly1800
+	$(call Device/FitImage)
+	$(call Device/EmmcImage)
+	DEVICE_VENDOR := Philips
+	DEVICE_MODEL := LY1800
+	SOC := ipq6010
+	BLOCKSIZE := 64k
+	KERNEL_SIZE := 6144k
+	DEVICE_DTS_CONFIG := config@cp01-c1
+	DEVICE_PACKAGES := ipq-wifi-philips_ly1800
+endef
+TARGET_DEVICES += philips_ly1800
 
 define Device/qihoo_360v6
 	$(call Device/FitImage)
