@@ -49,17 +49,6 @@ define Device/FitImage
 	KERNEL_NAME := Image
 endef
 
-define Device/widora_mangopi-mq-pro
-  $(call Device/Default)
-  DEVICE_VENDOR := MangoPi
-  DEVICE_MODEL := MQ Pro
-  DEVICE_DTS := allwinner/sun20i-d1-mangopi-mq-pro
-  SUPPORTED_DEVICES += mangopi_mq_pro
-  DEVICE_PACKAGES += kmod-rtw88-8723ds wpad-basic-mbedtls
-  UBOOT := mangopi_mq_pro
-endef
-TARGET_DEVICES += widora_mangopi-mq-pro
-
 define Device/100ask_dongshan-nezha-stu
   $(call Device/Default)
   DEVICE_VENDOR := Dongshan
@@ -80,6 +69,17 @@ define Device/sipeed_lichee-rv-dock
   UBOOT := lichee_rv_dock
 endef
 TARGET_DEVICES += sipeed_lichee-rv-dock
+
+define Device/widora_mangopi-mq-pro
+  $(call Device/Default)
+  DEVICE_VENDOR := MangoPi
+  DEVICE_MODEL := MQ Pro
+  DEVICE_DTS := allwinner/sun20i-d1-mangopi-mq-pro
+  SUPPORTED_DEVICES += mangopi_mq_pro
+  DEVICE_PACKAGES += kmod-rtw88-8723ds wpad-basic-mbedtls
+  UBOOT := mangopi_mq_pro
+endef
+TARGET_DEVICES += widora_mangopi-mq-pro
 
 define Device/allwinner_d1-nezha
   $(call Device/Default)
