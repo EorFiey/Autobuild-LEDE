@@ -22,6 +22,23 @@ define U-Boot/Default
 endef
 
 
+# RK3308 boards
+
+define U-Boot/rk3308/Default
+  BUILD_SUBTARGET:=armv8
+  DEPENDS:=+PACKAGE_u-boot-$(1):rkbin-rk3308
+  ATF:=rk3308_bl31_v2.27.elf
+  TPL:=rk3308_ddr_589MHz_uart2_m1_v2.10.bin
+endef
+
+define U-Boot/rock-pi-s-rk3308
+  $(U-Boot/rk3308/Default)
+  NAME:=ROCK Pi S
+  BUILD_DEVICES:= \
+    radxa_rock-pi-s
+endef
+
+
 # RK3328 boards
 
 define U-Boot/rk3328/Default
@@ -132,7 +149,8 @@ define U-Boot/nanopi-r4s-rk3399
   $(U-Boot/rk3399/Default)
   NAME:=NanoPi R4S
   BUILD_DEVICES:= \
-    friendlyarm_nanopi-r4s
+    friendlyarm_nanopi-r4s \
+    friendlyarm_nanopi-r4s-enterprise
   DEPENDS:=+PACKAGE_u-boot-$(1):rkbin-rk3399
   ATF:=rk3399_bl31_v1.36.elf
   USE_RKBIN:=1
@@ -345,13 +363,6 @@ define U-Boot/nanopi-r5s-rk3568
     friendlyarm_nanopi-r5s
 endef
 
-define U-Boot/nlnet-xgp-rk3568
-  $(U-Boot/rk3568/Default)
-  NAME:=NLnet XGP Board
-  BUILD_DEVICES:= \
-    nlnet_xgp
-endef
-
 define U-Boot/photonicat-rk3568
   $(U-Boot/rk3568/Default)
   NAME:=Ariaboard Photonicat
@@ -406,15 +417,6 @@ define U-Boot/generic-rk3576
     friendlyarm_nanopi-r76s
 endef
 
-define U-Boot/nanopi-m5-rk3576
-  $(U-Boot/rk3576/Default)
-  NAME:=NanoPi M5
-  BUILD_DEVICES:= \
-    friendlyarm_nanopi-m5 \
-    friendlyarm_nanopi-r76s
-  IDB_PRE_BUILD:=1
-endef
-
 define U-Boot/rock-4d-rk3576
   $(U-Boot/rk3576/Default)
   NAME:=ROCK 4D
@@ -443,6 +445,7 @@ define U-Boot/generic-rk3588
   $(U-Boot/rk3588/Default)
   NAME:=Generic RK3588
   BUILD_DEVICES:= \
+    bdy_g98 \
     radxa_e52c \
     radxa_e54c \
     seewo_srcm3588-io \
@@ -518,6 +521,7 @@ define U-Boot/rock-5c-rk3588s
 endef
 
 UBOOT_TARGETS := \
+  rock-pi-s-rk3308 \
   generic-rk3528 \
   nanopi-zero2-rk3528 \
   radxa-e20c-rk3528 \
@@ -532,14 +536,12 @@ UBOOT_TARGETS := \
   mmbox-anas3035-rk3568 \
   nanopi-r5c-rk3568 \
   nanopi-r5s-rk3568 \
-  nlnet-xgp-rk3568 \
   photonicat-rk3568 \
   radxa-e25-rk3568 \
   rock-3a-rk3568 \
   rock-3b-rk3568 \
   station-p2-rk3568 \
   generic-rk3576 \
-  nanopi-m5-rk3576 \
   rock-4d-rk3576 \
   sige5-rk3576 \
   generic-rk3588 \
@@ -591,11 +593,7 @@ ifneq ($(USE_RKBIN),)
 	$(STAGING_DIR_IMAGE)/loaderimage --pack --uboot $(PKG_BUILD_DIR)/u-boot-dtb.bin $(PKG_BUILD_DIR)/uboot.img 0x800000
 	$(CP) $(PKG_BUILD_DIR)/uboot.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-uboot.img
 else
-ifneq ($(IDB_PRE_BUILD),)
-	$(CP) ./files/$(BUILD_VARIANT)-idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
-else
 	$(CP) $(PKG_BUILD_DIR)/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
-endif
 	$(CP) $(PKG_BUILD_DIR)/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
 endif
 endef
