@@ -13,6 +13,8 @@ Link: https://lore.kernel.org/r/20250206030330.680424-3-damon.ding@rock-chips.co
  the hdptxphy0-as-dclk source I just added]
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 
+Signed-off-by: coolsnowwolf <coolsnowwolf@gmail.com>
+
 --- a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
 +++ b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
 @@ -1262,7 +1262,7 @@

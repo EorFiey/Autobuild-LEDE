@@ -16,6 +16,8 @@ Tested-by: FUKAUMI Naoki <naoki@radxa.com>
 Link: https://lore.kernel.org/r/20250204-vop2-hdmi0-disp-modes-v3-4-d71c6a196e58@collabora.com
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 
+Signed-off-by: coolsnowwolf <coolsnowwolf@gmail.com>
+
 --- a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
 +++ b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
 @@ -2813,6 +2813,7 @@
