@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssl
-PKG_VERSION:=3.6.3
+PKG_VERSION:=3.6.4
 PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 PKG_BUILD_FLAGS:=gc-sections no-lto
@@ -22,7 +22,7 @@ PKG_SOURCE_URL:= \
 	https://www.openssl.org/source/old/$(PKG_BASE)/ \
 	https://github.com/openssl/openssl/releases/download/$(PKG_NAME)-$(PKG_VERSION)/
 
-PKG_HASH:=243a86649cf6f23eeb6a2ff2456e09e5d77dd9018a54d3d96b0c6bdd6ba6c7f1
+PKG_HASH:=9bffaa1ad1e07b354c21bd3324ec02fa15579f45a7d0494b3e74bc449b7333ef
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE.txt
@@ -357,31 +357,34 @@ OPENSSL_TARGET:=linux-$(call qstrip,$(CONFIG_ARCH))-openwrt
 
 STAMP_CONFIGURED := $(STAMP_CONFIGURED)_$(shell echo $(OPENSSL_OPTIONS) | $(MKHASH) md5)
 
-TARGET_CFLAGS += $(FPIC)
-
 define Build/Configure
 	(cd $(PKG_BUILD_DIR); \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="$(TARGET_CPPFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./Configure $(OPENSSL_TARGET) \
 			--prefix=/usr \
 			--libdir=lib \
 			--openssldir=/etc/ssl \
 			--cross-compile-prefix="$(TARGET_CROSS)" \
+			$(TARGET_CFLAGS) \
+			$(TARGET_CPPFLAGS) \
+			$(TARGET_LDFLAGS) \
 			$(OPENSSL_OPTIONS) && \
 		{ [ -f $(STAMP_CONFIGURED) ] || make clean; } \
 	)
 endef
 
+TARGET_CFLAGS += $(FPIC)
+
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		CC="$(TARGET_CC)" \
 		SOURCE_DATE_EPOCH=$(SOURCE_DATE_EPOCH) \
+		OPENWRT_OPTIMIZATION_FLAGS="$(TARGET_CFLAGS)" \
+		$(OPENSSL_MAKEFLAGS) \
 		all
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		CC="$(TARGET_CC)" \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
+		$(OPENSSL_MAKEFLAGS) \
 		install_sw install_ssldirs
 endef
 
