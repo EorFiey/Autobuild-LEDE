@@ -239,8 +239,7 @@ define KernelPackage/lib-raid6
   TITLE:=RAID6 algorithm support
   HIDDEN:=1
   KCONFIG:=CONFIG_RAID6_PQ
-  FILES:=$(LINUX_DIR)/lib/raid6/raid6_pq.ko@lt7.3 \
-	$(LINUX_DIR)/lib/raid/raid6/raid6_pq.ko@ge7.3
+  FILES:=$(LINUX_DIR)/lib/raid6/raid6_pq.ko
   AUTOLOAD:=$(call AutoProbe,raid6_pq)
 endef
 
@@ -262,8 +261,7 @@ ifneq ($(wildcard $(LINUX_DIR)/arch/$(LINUX_KARCH)/lib/xor-neon.ko),)
     $(LINUX_DIR)/arch/$(LINUX_KARCH)/lib/xor-neon.ko
   AUTOLOAD:=$(call AutoProbe,xor-neon xor)
 else
-  FILES:=$(LINUX_DIR)/crypto/xor.ko@lt7.3 \
-	$(LINUX_DIR)/lib/raid/xor/xor.ko@ge7.3
+  FILES:=$(LINUX_DIR)/crypto/xor.ko
   AUTOLOAD:=$(call AutoProbe,xor)
 endif
 endef
