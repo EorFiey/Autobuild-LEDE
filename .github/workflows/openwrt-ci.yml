@@ -95,7 +95,7 @@ jobs:
 
       - name: Download packages
         run: |
-          make download -j1 V=s
+          make download -j16
           df -h
 
       - name: Compile firmware
