@@ -29,7 +29,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           docker image prune -f
-          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet /etc/php /usr/local/lib/android
           sudo apt-mark hold grub-efi-amd64-signed
           sudo apt update
           sudo apt -y full-upgrade
