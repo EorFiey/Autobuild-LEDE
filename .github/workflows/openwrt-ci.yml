@@ -23,124 +23,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
-
+    steps:
       - name: Space cleanup and Initialization environment
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          set -e
-
-          echo "========== Initial disk usage =========="
-          df -h
-          df -i
-
-          # 1. 清理 Docker 镜像和构建缓存
-          if command -v docker >/dev/null 2>&1; then
-            sudo docker system prune -af || true
-          fi
-
-          # 2. 更新 APT 软件包索引
-          sudo apt-get update
-
-          # 3. 卸载不参与 OpenWrt 编译的大型预装软件
-          # 只处理实际安装的软件包，避免通配符无匹配导致 APT 退出
-          mapfile -t REMOVE_PKGS < <(
-            dpkg-query -W -f='${db:Status-Abbrev} ${binary:Package}\n' 2>/dev/null |
-            awk '$1 == "ii" {print $2}' |
-            grep -E '^(azure-cli|docker|ghc|zulu|firefox|google|dotnet|powershell|openjdk|mysql|php|mongodb|snapd)([-:].*)?$' || true
-          )
-
-          if [ "${#REMOVE_PKGS[@]}" -gt 0 ]; then
-            echo "Removing packages: ${REMOVE_PKGS[*]}"
-            sudo apt-get purge -y "${REMOVE_PKGS[@]}"
-          else
-            echo "No unnecessary packages found."
-          fi
-
-          # 4. 清理残留的大型目录
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-
-          # 5. 安装 OpenWrt 编译依赖
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ack \
-            asciidoc \
-            autoconf \
-            automake \
-            autopoint \
-            binutils \
-            bison \
-            build-essential \
-            bzip2 \
-            ccache \
-            cmake \
-            cpio \
-            curl \
-            device-tree-compiler \
-            flex \
-            gawk \
-            gcc-multilib \
-            g++-multilib \
-            gettext \
-            genisoimage \
-            git \
-            gperf \
-            help2man \
-            intltool \
-            libelf-dev \
-            libfuse-dev \
-            libglib2.0-dev \
-            libgmp-dev \
-            libltdl-dev \
-            libmpc-dev \
-            libmpfr-dev \
-            libncurses-dev \
-            libpython3-dev \
-            libreadline-dev \
-            libssl-dev \
-            libtool \
-            ninja-build \
-            patch \
-            pkgconf \
-            python3 \
-            python3-pyelftools \
-            python3-setuptools \
-            qemu-utils \
-            rsync \
-            scons \
-            squashfs-tools \
-            subversion \
-            swig \
-            texinfo \
-            unzip \
-            wget \
-            xmlto \
-            xxd \
-            zlib1g-dev
-
-          # 6. 清理无用依赖和 APT 缓存
-          sudo apt-get autoremove --purge -y
-          sudo apt-get clean
-
-          # 7. 输出构建环境信息
-          echo "========== Operating System =========="
-          cat /etc/os-release
-
-          echo "========== Compiler =========="
-          gcc --version
-          g++ --version
-
-          echo "========== Python =========="
-          python3 --version
-
-          echo "========== Build tools =========="
-          cmake --version
-          make --version
-
-          echo "========== Disk usage =========="
-          df -h
-          df -i
-
+          sudo -E apt-mark hold grub-efi-amd64-signed
+          sudo -E apt update
+          sudo -E apt -y full-upgrade
+          sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache clang cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext genisoimage git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool llvm lrzsz msmtp ninja-build p7zip p7zip-full patch pkgconf python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+          sudo -E systemctl daemon-reload
+          sudo -E apt -y autoremove --purge
+          sudo -E apt clean
+          sudo -E timedatectl set-timezone "Asia/Shanghai"
 
       - name: Checkout OpenWrt
         uses: actions/checkout@v4
